@@ -12,8 +12,6 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
     public $base_title;
     public $title;
     public $js_object_name = 'wp_js_object'; // This object will be loaded into the metrics.js file by the wp_localize_script.
-    public $js_file_name = '/dt-metrics/groups/genmap.js'; // should be full file name plus extension
-    public $css_file_name = '/dt-metrics/common/jquery.orgchart.css'; // should be full file name plus extension
     public $permissions = [ 'dt_all_access_contacts', 'view_project_metrics' ];
     public $namespace = null;
 
@@ -58,17 +56,14 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
     }
 
     public function scripts() {
-        wp_enqueue_script( 'dt_metrics_project_script', get_template_directory_uri() . $this->js_file_name, [
+
+
+
+        $js_file_name = 'groups/genmap.js';
+        wp_enqueue_script( 'dt_metrics_project_script', plugin_dir_url(__DIR__) . $js_file_name, [
             'jquery',
             'lodash'
-        ], filemtime( get_theme_file_path() . $this->js_file_name ), true );
-
-        wp_enqueue_script( 'orgchart_js', 'https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.7.0/js/jquery.orgchart.min.js', [
-            'jquery',
-        ], '3.7.0', true );
-
-        wp_enqueue_style( 'orgchart_css', get_template_directory_uri() . $this->css_file_name, [], filemtime( get_theme_file_path() . $this->css_file_name ) );
-
+        ], filemtime( plugin_dir_path(__DIR__) . $js_file_name ), true );
         wp_localize_script(
             'dt_metrics_project_script', 'dtMetricsProject', [
                 'root' => esc_url_raw( rest_url() ),
@@ -80,6 +75,14 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
                 'data' => $this->data(),
             ]
         );
+
+        wp_enqueue_script( 'orgchart_js', 'https://cdnjs.cloudflare.com/ajax/libs/orgchart/3.7.0/js/jquery.orgchart.min.js', [
+            'jquery',
+        ], '3.7.0', true );
+        $css_file_name = 'common/jquery.orgchart.custom.css';
+        wp_enqueue_style( 'orgchart_css', plugin_dir_url(__DIR__) . $css_file_name, [], filemtime( plugin_dir_path(__DIR__)  . $css_file_name ) );
+
+
     }
 
     public function data() {

@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Disciple.Tools - One Page Template
+ * Plugin Name: Disciple.Tools - Genmap Upgrade
  * Plugin URI: https://github.com/DiscipleTools/disciple-tools-one-page-template
- * Description: One page extension plugin for Disciple Tools. Gives admin page and theme requirement loading.
+ * Description: Genmap Samples for Disciple.Tools
  * Version:  1.1
  * Author URI: https://github.com/DiscipleTools
  * GitHub Plugin URI: https://github.com/DiscipleTools/disciple-tools-one-page-template
@@ -66,7 +66,7 @@ class Genmap_Upgrade {
     public function __construct() {
 
         if ( dt_has_permissions( [ 'dt_all_access_contacts', 'view_project_metrics' ] ) ){
-            require_once( './dt-metrics/groups/genmap.php' );
+            require_once( 'dt-metrics/groups/genmap.php' );
         }
 
     }
