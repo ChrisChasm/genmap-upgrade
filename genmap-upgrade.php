@@ -66,7 +66,7 @@ class Genmap_Upgrade {
     public function __construct() {
 
         if ( dt_has_permissions( [ 'dt_all_access_contacts', 'view_project_metrics' ] ) ){
-            require_once( 'dt-metrics/groups/genmap.php' );
+            require_once( 'dt-metrics/combined/genmap.php' );
         }
 
     }

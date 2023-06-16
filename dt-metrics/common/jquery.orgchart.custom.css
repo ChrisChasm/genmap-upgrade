@@ -42,7 +42,7 @@
 }
 
 .orgchart.l2r {
-  position: absolute;
+  position: relative;
   transform: rotate(-90deg) rotateY(180deg);
   transform-origin: left top;
   /*text-align: center;*/

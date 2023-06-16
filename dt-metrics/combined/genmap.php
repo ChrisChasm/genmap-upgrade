@@ -7,7 +7,7 @@ if ( !defined( 'ABSPATH' ) ) {
 class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
 {
     //slug and title of the top menu folder
-    public $base_slug = 'groups'; // lowercase
+    public $base_slug = 'combined'; // lowercase
     public $slug = 'genmap'; // lowercase
     public $base_title;
     public $title;
@@ -21,7 +21,7 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
             return;
         }
         $this->base_title = __( 'Genmap', 'disciple_tools' );
-        $this->title = __( 'Groups Genmap', 'disciple_tools' );
+        $this->title = __( 'Genmap', 'disciple_tools' );
 
         $url_path = dt_get_url_path( true );
         if ( "metrics/$this->base_slug/$this->slug" === $url_path ) {
@@ -37,29 +37,30 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
         $version = '1';
         $namespace = 'dt/v' . $version;
         register_rest_route(
-            $namespace, '/metrics/group/genmap', [
+            $namespace, '/metrics/combined/genmap', [
                 [
                     'methods'  => WP_REST_Server::CREATABLE,
-                    'callback' => [ $this, 'get_genmap' ],
+                    'callback' => [ $this, 'tree' ],
                     'permission_callback' => '__return_true',
                 ],
             ]
         );
-
     }
-
     public function tree( WP_REST_Request $request ) {
         if ( !$this->has_permission() ){
             return new WP_Error( __METHOD__, 'Missing Permissions', [ 'status' => 400 ] );
         }
-        return $this->get_group_generations_tree();
+        $params = dt_sanitize_array( $request->get_params() );
+        if ( ! isset( $params['p2p_type'], $params['post_type'] ) ) {
+            return new WP_Error( __METHOD__, 'Missing type', [ 'status' => 400 ] );
+        }
+        $query = $this->get_query( $params['post_type'], $params['p2p_type'] );
+        return $this->get_genmap( $query  );
     }
 
     public function scripts() {
 
-
-
-        $js_file_name = 'groups/genmap.js';
+        $js_file_name = 'combined/genmap.js';
         wp_enqueue_script( 'dt_metrics_project_script', plugin_dir_url(__DIR__) . $js_file_name, [
             'jquery',
             'lodash'
@@ -67,12 +68,24 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
         wp_localize_script(
             'dt_metrics_project_script', 'dtMetricsProject', [
                 'root' => esc_url_raw( rest_url() ),
+                'site_url' => esc_url_raw( site_url() ),
                 'theme_uri' => get_template_directory_uri(),
                 'nonce' => wp_create_nonce( 'wp_rest' ),
                 'current_user_login' => wp_get_current_user()->user_login,
                 'current_user_id' => get_current_user_id(),
                 'map_key' => empty( DT_Mapbox_API::get_key() ) ? '' : DT_Mapbox_API::get_key(),
-                'data' => $this->data(),
+                'data' => [],
+                'translations' => [
+                    'title' => __( 'Generation Map', 'disciple_tools' ),
+                    'highlight_active' => __( 'Highlight Active', 'disciple_tools' ),
+                    'highlight_churches' => __( 'Highlight Churches', 'disciple_tools' ),
+                    'members' => __( 'Members', 'disciple_tools' ),
+                    'view_record' => __( 'View Record', 'disciple_tools' ),
+                    'assigned_to' => __( 'Assigned To', 'disciple_tools' ),
+                    'status' => __( 'Status', 'disciple_tools' ),
+                    'total_members' => __( 'Total Members', 'disciple_tools' ),
+                    'view_group' => __( 'View Group', 'disciple_tools' ),
+                ],
             ]
         );
 
@@ -81,29 +94,41 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
         ], '3.7.0', true );
         $css_file_name = 'common/jquery.orgchart.custom.css';
         wp_enqueue_style( 'orgchart_css', plugin_dir_url(__DIR__) . $css_file_name, [], filemtime( plugin_dir_path(__DIR__)  . $css_file_name ) );
-
-
+    }
+    public function get_query( $post_type, $p2p_type  ) {
+        global $wpdb;
+        $query = $wpdb->get_results( $wpdb->prepare ( "
+                    SELECT
+                      a.ID         as id,
+                      0            as parent_id,
+                      a.post_title as name
+                    FROM $wpdb->posts as a
+                    WHERE a.post_type = %s
+                    AND a.ID NOT IN (
+                      SELECT DISTINCT (p2p_from)
+                      FROM $wpdb->p2p
+                      WHERE p2p_type = %s
+                      GROUP BY p2p_from
+                    )
+                      AND a.ID IN (
+                      SELECT DISTINCT (p2p_to)
+                      FROM $wpdb->p2p
+                      WHERE p2p_type = %s
+                      GROUP BY p2p_to
+                    )
+                    UNION
+                    SELECT
+                      p.p2p_from  as id,
+                      p.p2p_to    as parent_id,
+                      (SELECT sub.post_title FROM $wpdb->posts as sub WHERE sub.ID = p.p2p_from ) as name
+                    FROM $wpdb->p2p as p
+                    WHERE p.p2p_type = %s;
+                ", $post_type, $p2p_type, $p2p_type, $p2p_type ), ARRAY_A );
+        return $query;
     }
 
-    public function data() {
-        return [
-            'translations' => [
-                'title_group_tree' => __( 'Group Generation Tree', 'disciple_tools' ),
-                'highlight_active' => __( 'Highlight Active', 'disciple_tools' ),
-                'highlight_churches' => __( 'Highlight Churches', 'disciple_tools' ),
-                'members' => __( 'Members', 'disciple_tools' ),
-                'view_record' => __( 'View Record', 'disciple_tools' ),
-                'assigned_to' => __( 'Assigned To', 'disciple_tools' ),
-                'status' => __( 'Status', 'disciple_tools' ),
-                'total_members' => __( 'Total Members', 'disciple_tools' ),
-                'view_group' => __( 'View Group', 'disciple_tools' ),
+    public function get_genmap( $query ) {
 
-            ],
-        ];
-    }
-
-    public function get_genmap() {
-        $query = dt_queries()->tree( 'multiplying_groups_only' );
         if ( is_wp_error( $query ) ){
             return $this->_circular_structure_error( $query );
         }
@@ -111,10 +136,7 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
             return $this->_no_results();
         }
         $menu_data = $this->prepare_menu_array( $query );
-        dt_write_log( $menu_data );
-        $group_array = $this->build_group_array( 0, $menu_data, 0 );
-        dt_write_log( $group_array );
-        return $group_array;
+        return $this->build_array( 0, $menu_data, 0 );
     }
     public function prepare_menu_array( $query ) {
         // prepare special array with parent-child relations
@@ -130,26 +152,25 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
         }
         return $menu_data;
     }
-    public function build_group_array( $parent_id, $menu_data, $gen ) {
-        $html = [];
+    public function build_array( $parent_id, $menu_data, $gen ) {
         $children = [];
         if ( isset( $menu_data['parents'][$parent_id] ) )
         {
             $next_gen = $gen + 1;
-
             foreach ( $menu_data['parents'][$parent_id] as $item_id )
             {
-                $children[] = $this->build_group_array( $item_id, $menu_data, $next_gen );
+                $children[] = $this->build_array( $item_id, $menu_data, $next_gen );
             }
         }
-        $html = [
+        $array = [
             'id' => $parent_id,
             'name' => $menu_data['items'][ $parent_id ]['name'] ?? 'SYSTEM' ,
-            'content' => ( $parent_id ) ? 'Gen ' . $gen . ' - ' . $menu_data['items'][ $parent_id ]['group_type'] : '',
+            'content' => 'Gen ' . $gen ,
             'children' => $children,
         ];
-        return $html;
+        return $array;
     }
+
 
 }
 new DT_Metrics_Groups_Genmap();
