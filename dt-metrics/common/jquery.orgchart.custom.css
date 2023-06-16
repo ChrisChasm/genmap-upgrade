@@ -304,6 +304,8 @@
   transform: rotate(-90deg) translate(-45px, -45px) rotateY(180deg);
   transform-origin: top center;
   width: 130px;
+  background-color: var(--dt-blue-o);
+    color: #fff;
 }
 
 .orgchart.r2l .node .content {

@@ -16,19 +16,19 @@ jQuery(document).ready(function($) {
     chart.empty().html(`
           <div class="grid-x grid-padding-x">
               <div class="cell medium-6">
-                <h2>${window.lodash.escape(translations.title)}</h2>
+                  <span>
+                    <select id="select_type" style="width: 200px;">
+                      <option value="groups_to_groups" data-post-type="groups">Groups</option>
+                      <option value="contacts_to_contacts" data-post-type="contacts">Coaching</option>
+                      <option value="baptizer_to_baptized" data-post-type="contacts">Baptisms</option>
+                    </select>
+                  </span>
+                  <span>
+                    <i class="fi-loop" onclick="window.load_genmap()" style="font-size: 1.5em; padding:.5em;cursor:pointer;"></i>
+                  </span>
               </div>
-              <div class="cell medium-6">
-                <span style="float: right;">
-                  <select id="select_type">
-                    <option value="groups_to_groups" data-post-type="groups">Groups</option>
-                    <option value="contacts_to_contacts" data-post-type="contacts">Coaching</option>
-                    <option value="baptizer_to_baptized" data-post-type="contacts">Baptisms</option>
-                  </select>
-                  </span>
-                  <span style="float: right;">
-                    <i class="fi-loop" onclick="window.load_genmap()" style="font-size: 2em; padding:.5em;cursor:pointer;"></i>
-                  </span>
+              <div class="cell medium-6" >
+                <h2 style="float:right;">${window.lodash.escape(translations.title)}</h2>
               </div>
           </div>
           <hr>
