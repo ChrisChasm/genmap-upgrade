@@ -170,8 +170,6 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
         ];
         return $array;
     }
-
-
 }
 new DT_Metrics_Groups_Genmap();
 
