@@ -134,13 +134,17 @@ jQuery(document).ready(function($) {
         })
         group_list += '</ul>'
       }
+      let status = ''
+      if ( typeof data.overall_status !== 'undefined' ) {
+        status = data.overall_status['label']
+      }
       return `
         <div class="grid-x grid-padding-x">
           <div class="cell">
             <h2>${data.title}</h2><hr>
           </div>
           <div class="cell">
-            Status: ${data.overall_status['label']}
+            Status: ${status}
           </div>
           <div class="cell">
             Groups:
@@ -186,17 +190,24 @@ jQuery(document).ready(function($) {
         })
         coach_list += '</ul>'
       }
-
+      let status = ''
+      if ( typeof data.group_status !== 'undefined' ) {
+        status = data.group_status['label']
+      }
+      let type = ''
+      if ( typeof data.group_type !== 'undefined' ) {
+        type = data.group_type['label']
+      }
       return `
         <div class="grid-x grid-padding-x">
           <div class="cell">
             <h2>${data.title}</h2><hr>
           </div>
           <div class="cell">
-            Type: ${data.group_status['label']}
+            Type: ${status}
           </div>
           <div class="cell">
-            Type: ${data.group_type['label']}
+            Type: ${type}
           </div>
           <div class="cell">
             Member Count: ${members_count}
