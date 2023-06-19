@@ -115,7 +115,7 @@ jQuery(document).ready(function($) {
     if ( post_type === 'contacts' ) {
 
       let assign_to = 0
-      if ( typeof data.assigned_to.display !== 'undefined' ) {
+      if ( typeof data.assigned_to !== 'undefined' ) {
         assign_to = data.assigned_to.display
       }
       let coach_list = '<ul>'
