@@ -183,8 +183,10 @@
   box-sizing: border-box;
   display: inline-block;
   position: relative;
-  margin: 0 0 20px 0;
+  margin: 0 1px 18px 0;
+  border-radius: 5px;
   padding: 3px;
+  background-color: rgba(63, 114, 155, 1);
   border: 2px dashed transparent;
   text-align: center;
 }
@@ -576,9 +578,9 @@
   /*height: 10px;*/
   /*transform: rotate(45deg);*/
   display: inline-block;
-  border: 3px solid #000;
-  border-right: unset;
-  border-bottom: unset;
+  /*border: 3px solid #000;*/
+  /*border-right: unset;*/
+  /*border-bottom: unset;*/
 }
 
 .oci-chevron-down::before {
@@ -593,9 +595,9 @@
   /*height: 10px;*/
   /*transform: rotate(45deg);*/
   display: inline-block;
-  border: 3px solid #000;
-  border-top: unset;
-  border-left: unset;
+  /*border: 3px solid #000;*/
+  /*border-top: unset;*/
+  /*border-left: unset;*/
 }
 .oci-chevron-left::before {
     content: "";
@@ -609,9 +611,9 @@
     /*height: 10px;*/
     /*transform: rotate(45deg);*/
     display: inline-block;
-    border: 3px solid #000;
-    border-top: unset;
-    border-right: unset;
+    /*border: 3px solid #000;*/
+    /*border-top: unset;*/
+    /*border-right: unset;*/
 }
 .oci-chevron-right::before {
   content: "";
@@ -625,9 +627,9 @@
   /*height: 10px;*/
   /*transform: rotate(45deg);*/
   display: inline-block;
-  border: 3px solid #000;
-  border-left: unset;
-  border-bottom: unset;
+  /*border: 3px solid #000;*/
+  /*border-left: unset;*/
+  /*border-bottom: unset;*/
 }
 
 .oci-plus-square::before {
