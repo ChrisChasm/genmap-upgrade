@@ -114,11 +114,11 @@ jQuery(document).ready(function($) {
   window.detail_template = ( post_type, data ) => {
     if ( post_type === 'contacts' ) {
 
-      let assign_to = 0
+      let assign_to = ''
       if ( typeof data.assigned_to !== 'undefined' ) {
         assign_to = data.assigned_to.display
       }
-      let coach_list = '<ul>'
+      let coach_list = ''
       if ( typeof data.coached_by !== 'undefined' ) {
         coach_list = '<ul>'
         jQuery.each( data.coached_by, function( index, value ) {
@@ -126,7 +126,7 @@ jQuery(document).ready(function($) {
         })
         coach_list += '</ul>'
       }
-      let group_list = '<ul>'
+      let group_list = ''
       if ( typeof data.groups !== 'undefined' ) {
         group_list = '<ul>'
         jQuery.each( data.groups, function( index, value ) {
@@ -165,12 +165,12 @@ jQuery(document).ready(function($) {
       if ( typeof data.member_count !== 'undefined' ) {
         members_count = data.member_count
       }
-      let assign_to = 0
+      let assign_to = ''
       if ( typeof data.assigned_to !== 'undefined' ) {
         assign_to = data.assigned_to.display
       }
 
-      let member_list = '<ul>'
+      let member_list = ''
       if ( typeof data.members !== 'undefined' ) {
         member_list = '<ul>'
         jQuery.each( data.members, function( index, value ) {
@@ -178,7 +178,7 @@ jQuery(document).ready(function($) {
         })
         member_list += '</ul>'
       }
-      let coach_list = '<ul>'
+      let coach_list = ''
       if ( typeof data.coached_by !== 'undefined' ) {
         coach_list = '<ul>'
         jQuery.each( data.coached_by, function( index, value ) {
