@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Disciple.Tools - Genmap Upgrade
+ * Plugin Name: Genmap Upgrade
  * Plugin URI: https://github.com/DiscipleTools/disciple-tools-one-page-template
  * Description: Genmap Samples for Disciple.Tools
  * Version:  1.1
