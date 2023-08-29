@@ -50,7 +50,7 @@ class DT_Metrics_Groups_Genmap extends DT_Metrics_Chart_Base
         if ( !$this->has_permission() ){
             return new WP_Error( __METHOD__, 'Missing Permissions', [ 'status' => 400 ] );
         }
-        $params = dt_sanitize_array( $request->get_params() );
+        $params = dt_recursive_sanitize_array( $request->get_params() );
         if ( ! isset( $params['p2p_type'], $params['post_type'] ) ) {
             return new WP_Error( __METHOD__, 'Missing type', [ 'status' => 400 ] );
         }
